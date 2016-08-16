@@ -13,6 +13,7 @@ class MapActor  extends  UntypedActor {
     message match {
       case data: String => // 告诉 reduce 我map好了，map好的消息可用对应message实体进行封装
         println("map got message:" + data)
+        // getSender().tell("reply to master !!",this.sender()) // 造成消息一直循环发送。需要手动处理结束
         reduceActor.tell("map ok!",this.sender())
       case _ =>
         println("map unhandled message")
