@@ -6,6 +6,10 @@ scalaVersion := "2.11.8"
 
 libraryDependencies += "com.typesafe.akka" % "akka-actor_2.11" % "2.4.9-RC2"
 
+libraryDependencies += "org.apache.spark" % "spark-core_2.10" % "1.5.2"
+
+libraryDependencies += "org.apache.spark" % "spark-streaming_2.10" % "1.5.2"
+
 ivyScala := ivyScala.value map { _.copy(overrideScalaVersion = true) }
 
 assemblyMergeStrategy in assembly := {
