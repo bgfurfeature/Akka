@@ -1,4 +1,4 @@
-package lightbend
+/*package lightbend
 
 import akka.actor.{ Actor, Props }
 import org.apache.spark._
@@ -70,5 +70,5 @@ object StreamingApp {
 
     scala.io.StdIn.readLine("Press Enter to stop Spark Streaming context and the application...")
     ssc.stop(stopSparkContext = true, stopGracefully = true)
-  }
+  }*/
 }
