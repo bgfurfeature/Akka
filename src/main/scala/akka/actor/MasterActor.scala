@@ -1,7 +1,7 @@
 package akka.actor
 
 import akka.event.Logging
-import akka.message.AggData
+import akka.message.{AggData, Result}
 
 /**
   * Created by C.J.YOU on 2016/8/16.
@@ -17,7 +17,7 @@ class MasterActor extends  Actor {
 
   // 保持全局只有对应的一个reduceActor 实例(通过传递参数)，从而保持actor的监管和监控系统更合理
 
-  val mapActor = context.actorOf(Props(new MapActor(reduceActor)),"mapActor")
+  val mapActor = context.actorOf(Props(new MapActor(reduceActor)),"mapActor")  // [akka://TestAkkaSystem/user/MasterActor/mapActor]
 
   val log = Logging(context.system, this)
 
@@ -40,15 +40,18 @@ class MasterActor extends  Actor {
 
   // 消息处理
   override def receive: Receive = {
+
     case mes: String => // 如果收到的是字符消息通知MapActor
       log.info("master got message:" + mes)
       mapActor.tell(mes,this.sender())
 
     case data: AggData => // 如果收到的是AggData消息，告诉aggregateActor 处理
       aggregateActor.tell(data,this.sender())
+
+    case message:Result =>
+      aggregateActor.tell(message,this.sender())
     case _ =>
       log.info("master unhandled message")
-      unhandled(_)
   }
 
   @scala.throws[Exception](classOf[Exception])

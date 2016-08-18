@@ -1,20 +1,54 @@
 package akka.actor
 
+import akka.event.Logging
+import akka.message.{ReduceData, Result}
+
+import scala.collection.mutable
+
 /**
   * Created by C.J.YOU on 2016/8/16.
   */
 class AggregateActor extends  UntypedActor {
+
+  val finalHashMap = new mutable.HashMap[String, Int]()
+
+  val log = Logging(context.system, this)
 
   @scala.throws[Throwable](classOf[Throwable])
   override def onReceive(message: Any): Unit = {
 
     message match {
       case data: String =>
-        println("Aggregate got message:" + data)
-        println("Aggregate ok!")
+        log.info("Aggregate got message:" + data)
+        log.info("Aggregate ok!")
+
+      case reduceData:ReduceData =>
+        aggregateInMemoryReduce(reduceData.reduceHashMap)
+
+      case message:Result =>
+        println(finalHashMap.toString())
+
       case _ =>
-        println("map unhandled message")
+        log.info("map unhandled message")
         unhandled(message)
     }
+  }
+
+  // 聚合
+  def aggregateInMemoryReduce(reduceMap: mutable.HashMap[String, Int]): Unit = {
+
+    var count = 0
+    reduceMap.foreach(x => {
+
+      if(finalHashMap.contains(x._1)) {
+        count = x._2
+        count += finalHashMap.get(x._1).get
+        finalHashMap.put(x._1,count)
+      } else {
+        finalHashMap.put(x._1,x._2)
+      }
+
+    })
+
   }
 }
