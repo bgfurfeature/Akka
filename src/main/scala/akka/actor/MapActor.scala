@@ -3,9 +3,9 @@ package akka.actor
 /**
   * Created by C.J.YOU on 2016/8/16.
   */
-class MapActor  extends  UntypedActor {
+class MapActor(reduceActor: ActorRef)  extends  UntypedActor {
 
-  val reduceActor = getContext().actorOf(Props(classOf[ReduceActor]),"reduceActor")
+  // val reduceActor = getContext().actorOf(Props(classOf[ReduceActor]),"reduceActor")
 
   @scala.throws[Throwable](classOf[Throwable])
   override def onReceive(message: Any): Unit = {

@@ -13,7 +13,11 @@ class MasterActor extends  Actor {
 
   val aggregateActor = context.actorOf(Props(classOf[AggregateActor]), "aggregateActor")
 
-  val mapActor = context.actorOf(Props(classOf[MapActor]),"mapActor")
+  val reduceActor = context.actorOf(Props(new ReduceActor(aggregateActor)),"reduceActor")
+
+  // 保持全局只有对应的一个reduceActor 实例(通过传递参数)，从而保持actor的监管和监控系统更合理
+
+  val mapActor = context.actorOf(Props(new MapActor(reduceActor)),"mapActor")
 
   val log = Logging(context.system, this)
 

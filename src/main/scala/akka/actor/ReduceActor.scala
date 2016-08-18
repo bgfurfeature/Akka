@@ -5,9 +5,9 @@ import akka.event.Logging
 /**
   * Created by C.J.YOU on 2016/8/16.
   */
-class ReduceActor extends  UntypedActor {
+class ReduceActor(aggregateActor: ActorRef) extends  UntypedActor {
 
-  val aggregateActor = getContext().actorOf(Props(classOf[AggregateActor]), "aggregateActor")
+  // val aggregateActor = getContext().actorOf(Props(classOf[AggregateActor]), "aggregateActor")
 
   val log = Logging(context.system, this)
 
