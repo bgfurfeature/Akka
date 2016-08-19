@@ -1,6 +1,5 @@
 import akka.actor.{ActorSystem, MasterActor, Props}
 import akka.message.Result
-import org.apache.spark.SparkEnv
 
 /**
   * Created by C.J.YOU on 2016/8/16.
