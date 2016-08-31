@@ -3,7 +3,7 @@ package akka.actor
 import java.util.StringTokenizer
 
 import akka.event.Logging
-import akka.message.{MapData, Word}
+import akka.message.{MapData, Result, Word}
 
 import scala.collection.mutable.ListBuffer
 
@@ -25,6 +25,10 @@ class MapActor(reduceActor: ActorRef)  extends  UntypedActor {
         log.info("map got message:" + data)
         reduceActor.tell("map ok!",this.sender())
         reduceActor ! evaluateExpression(data)
+
+      case message:Result =>
+        sender() !  message
+
       case _ =>
         println("map unhandled message")
         unhandled(message)

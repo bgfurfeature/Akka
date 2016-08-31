@@ -8,7 +8,7 @@ import scala.collection.mutable
 /**
   * Created by C.J.YOU on 2016/8/16.
   */
-class AggregateActor extends  UntypedActor {
+class AggregateActor(resultActor: ActorRef) extends  UntypedActor {
 
   val finalHashMap = new mutable.HashMap[String, Int]()
 
@@ -24,9 +24,11 @@ class AggregateActor extends  UntypedActor {
 
       case reduceData:ReduceData =>
         aggregateInMemoryReduce(reduceData.reduceHashMap)
+        println("path:" + sender().path)
+        resultActor ! new Result(finalHashMap)  // 给ResultActor发送计算结果
 
       case message:Result =>
-        println(finalHashMap.toString())
+        println("AggregateActor:" + message.resultValue.toString())
 
       case _ =>
         log.info("map unhandled message")

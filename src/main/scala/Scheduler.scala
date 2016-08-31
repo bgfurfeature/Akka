@@ -1,5 +1,6 @@
+
 import akka.actor.{ActorSystem, MasterActor, Props}
-import akka.message.Result
+import akka.message.Respond
 
 /**
   * Created by C.J.YOU on 2016/8/16.
@@ -17,11 +18,26 @@ object Scheduler {
     val system = ActorSystem("""sparkDriver""")
     val masterActor = system.actorOf(Props[MasterActor], name = "MasterActor")
 
-    masterActor.tell("lets do action",masterActor)
+    masterActor.tell("lets do action",masterActor)  // 实现了通过反馈消息：得到计算是否结束，并打印出结果
 
     Thread.sleep(3000)  // 等待计算结束通知
 
-    masterActor ! new Result() // 告诉masterActor 我需要得到计算结果
+    println("main:"+ Respond.getInstance.getResult.resultValue.toString())
+
+    // 获取反馈信息
+    /*val timeOut = new Timeout(Duration.create(5,"seconds"))
+    val future = Patterns.ask(masterActor, "lets do it again", timeOut)
+    val result = Await.result(future,timeOut.duration)
+    if(result.asInstanceOf[String].nonEmpty) {
+      println("main:"+ Respond.getInstance.getResult.resultValue.toString())
+    }*/
+
+    // 消息转发
+    // masterActor.forward("forward message!")
+
+    // Thread.sleep(3000)  // 等待计算结束通知
+    // 获取mapReduce后结果
+    // masterActor ! new Result() // 告诉masterActor 我需要得到计算结果
 
     system.terminate() // 结束actor system
 

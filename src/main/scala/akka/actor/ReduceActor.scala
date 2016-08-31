@@ -1,7 +1,7 @@
 package akka.actor
 
 import akka.event.Logging
-import akka.message.{MapData, ReduceData, Word}
+import akka.message.{MapData, ReduceData, Result, Word}
 
 import scala.collection.mutable
 
@@ -24,6 +24,10 @@ class ReduceActor(aggregateActor: ActorRef) extends  UntypedActor {
 
       case mapData: MapData =>
         aggregateActor ! reduceDataList(mapData.dataList)
+
+      case message:Result =>
+        println("ReduceActor:" + message.resultValue.toString())
+        sender() ! message
 
       case _ =>
         log.info("map unhandled message")

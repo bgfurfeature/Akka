@@ -11,7 +11,9 @@ import akka.message.{AggData, Result}
   */
 class MasterActor extends  Actor {
 
-  val aggregateActor = context.actorOf(Props(classOf[AggregateActor]), "aggregateActor")
+  val resultActor =  context.actorOf(Props[ResultActor], "resultActor")
+
+  val aggregateActor = context.actorOf(Props(new AggregateActor(resultActor)), "aggregateActor")
 
   val reduceActor = context.actorOf(Props(new ReduceActor(aggregateActor)),"reduceActor")
 
@@ -45,11 +47,15 @@ class MasterActor extends  Actor {
       log.info("master got message:" + mes)
       mapActor.tell(mes,this.sender())
 
+      // 给发送回复信息
+      // sender().tell("发送回复信息", this.self)
+
     case data: AggData => // 如果收到的是AggData消息，告诉aggregateActor 处理
       aggregateActor.tell(data,this.sender())
 
     case message:Result =>
-      aggregateActor.tell(message,this.sender())
+      println("master:" + message.resultValue.toString)
+
     case _ =>
       log.info("master unhandled message")
   }
